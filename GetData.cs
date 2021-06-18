@@ -70,17 +70,7 @@ namespace CsFetch
 				foreach (ManagementObject obj in win32Proc.Get())
 				{
 					CPU = obj["Name"].ToString();
-					break;
-				}
-
-				foreach (ManagementObject obj in win32Proc.Get())
-				{
 					Cores = obj["NumberOfCores"].ToString();
-					break;
-				}
-
-				foreach (ManagementObject obj in win32Proc.Get())
-				{
 					Threads = obj["NumberOfLogicalProcessors"].ToString();
 					break;
 				}
@@ -90,12 +80,8 @@ namespace CsFetch
 					double x = Convert.ToDouble(obj["TotalVisibleMemorySize"]);
 					x /= (1024 * 1024);
 					RAM = Math.Round(x, 2);
-					break;
-				}
 
-				foreach (ManagementObject obj in win32Memory.Get())
-				{
-					double x = Convert.ToDouble(obj["FreePhysicalMemory"]);
+					x = Convert.ToDouble(obj["FreePhysicalMemory"]);
 					x /= (1024 * 1024);
 					x = RAM - x;
 					UsedRAM = Math.Round(x, 2);
@@ -113,11 +99,6 @@ namespace CsFetch
 				foreach (ManagementObject obj in win32GPU.Get())
 				{
 					GPU = obj["Name"].ToString();
-					break;
-				}
-
-				foreach (ManagementObject obj in win32GPU.Get())
-				{
 					double x = Convert.ToDouble(obj["AdapterRam"]);
 					x = Math.Round((x / (1024 * 1024 * 1024)), 2);
 					VRAM = x;
