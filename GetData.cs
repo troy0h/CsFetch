@@ -28,31 +28,22 @@ namespace CsFetch
 		{
 				ComputerName = Environment.MachineName;
 				UserName = Environment.UserName;
-				GetOSAndVerion();
+				SetPCInfo();
 				Uptime = GetUptime();
 				Terminal = Environment.GetEnvironmentVariable("ComSpec").ToString();
-				SetPCInfo();
 		}
 
-		private void GetOSAndVerion()
-		{
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-			{
-				using RegistryKey reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-				OS = $"{reg.GetValue("ProductName")}";
-				Version = $"{reg.GetValue("ReleaseId")} (OS Build {reg.GetValue("CurrentBuildNumber")}.{reg.GetValue("UBR")})";
-			}
-
-			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-			{
-				// Linux crap here
-			}
-        }
 
 		private void SetPCInfo()
 		{
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
+				// Get OS and Version from Registry
+				using RegistryKey reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+				OS = $"{reg.GetValue("ProductName")}";
+				Version = $"{reg.GetValue("ReleaseId")} (OS Build {reg.GetValue("CurrentBuildNumber")}.{reg.GetValue("UBR")})";
+
+				// Get PC Info
 				using ManagementObjectSearcher
 				win32Proc = new("select * from Win32_Processor"),
 				win32CompSys = new("select * from Win32_ComputerSystem"),
@@ -61,12 +52,14 @@ namespace CsFetch
 				win32GPU = new("select * from Win32_VideoController"),
 				win32Page = new("select * from Win32_PageFileUsage");
 
+				// Gets Mobo Name
 				foreach (ManagementObject obj in win32Mobo.Get())
 				{
 					Mobo = obj["Product"].ToString();
 					break;
 				}
 
+				// Gets CPU and Core / Thread Count
 				foreach (ManagementObject obj in win32Proc.Get())
 				{
 					CPU = obj["Name"].ToString();
@@ -75,6 +68,7 @@ namespace CsFetch
 					break;
 				}
 
+				// Gets RAM and Free RAM, and calculates whats being used
 				foreach (ManagementObject obj in win32Memory.Get())
 				{
 					double x = Convert.ToDouble(obj["TotalVisibleMemorySize"]);
@@ -88,6 +82,7 @@ namespace CsFetch
 					break;
 				}
 
+				// Gets Page File Size
 				foreach (ManagementObject obj in win32Page.Get())
 				{
 					double x = Convert.ToDouble(obj["AllocatedBaseSize"]);
@@ -96,6 +91,7 @@ namespace CsFetch
 					break;
 				}
 
+				// Gets GPU and VRAM Size
 				foreach (ManagementObject obj in win32GPU.Get())
 				{
 					GPU = obj["Name"].ToString();
@@ -112,6 +108,7 @@ namespace CsFetch
 			}
 		}
 
+		// Calculates Uptime
         public static string GetUptime()
 		{
 			int ticks = Environment.TickCount;
@@ -134,6 +131,7 @@ namespace CsFetch
 			return uptime;
 		}
 
+		// Makes Data into easily formatted sections
 		List<Data> PCData;
 		public List<Data> GetWithLabels()
 		{
