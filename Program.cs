@@ -63,14 +63,12 @@ namespace CsFetch
 			catch (Exception ex)
 			{
 				Console.ForegroundColor = ConsoleColor.DarkRed;
-				Console.WriteLine("Aaaaaagh, this should have never happened!");
 				Console.WriteLine(ex.Message);
 			}
 			finally
 			{
 				Console.ForegroundColor = prev;
-				if (Debugger.IsAttached)
-					Console.ReadLine();
+				Console.ReadKey();
 			}
 		}
 	}

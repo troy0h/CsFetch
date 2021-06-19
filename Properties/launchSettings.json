@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "CsFetch": {
+      "commandName": "Project"
+    },
+    "WSL2": {
+      "commandName": "WSL2",
+      "distributionName": "Ubuntu"
+    }
+  }
+}

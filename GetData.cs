@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Management;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
@@ -30,9 +31,7 @@ namespace CsFetch
 				UserName = Environment.UserName;
 				SetPCInfo();
 				Uptime = GetUptime();
-				Terminal = Environment.GetEnvironmentVariable("ComSpec").ToString();
 		}
-
 
 		private void SetPCInfo()
 		{
@@ -42,6 +41,7 @@ namespace CsFetch
 				using RegistryKey reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 				OS = $"{reg.GetValue("ProductName")}";
 				Version = $"{reg.GetValue("ReleaseId")} (OS Build {reg.GetValue("CurrentBuildNumber")}.{reg.GetValue("UBR")})";
+				Terminal = Environment.GetEnvironmentVariable("ComSpec").ToString();
 
 				// Get PC Info
 				using ManagementObjectSearcher
@@ -104,7 +104,18 @@ namespace CsFetch
 
 			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 			{
-				// Linux crap here
+				OS = "";
+				Version = "";
+				Mobo = "";
+				Terminal = Environment.GetEnvironmentVariable("SessionName");
+				CPU = "";
+				Cores = "";
+				Threads = "";
+				RAM = 1.0;
+				UsedRAM = 1.0;
+				Page = "";
+				GPU = "";
+				VRAM = 1.0;
 			}
 		}
 
